@@ -1,0 +1,16 @@
+Data
+Base
+
+    Data Label (String): the user editable name of this object, it is an arbitrary UTF8 string.
+    Data Group (LinkList): a list of referenced objects. By default, it is empty [].
+
+Hidden properties Data
+    Data    Proxy (PythonObject): a custom class associated with this object. This only exists for the Python version. See Scripting.
+
+View
+Base
+
+See App FeaturePython for the basic view properties.
+
+Hidden properties View
+ViewProxy (PythonObject): a custom view provider class associated with this object. This only exists for the Python version. See Scripting.

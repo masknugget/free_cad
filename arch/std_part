@@ -1,0 +1,113 @@
+Std Base
+
+    1. Std Part.svg Std Part: Creates a new part and makes it active.
+    2. Std Group.svg Std Group: Creates a new group.
+    3. Std LinkMake.svg Std LinkMake: Creates a link. introduced in version 0.19
+    4. Std LinkMakeRelative.svg Std LinkMakeRelative: Creates a sub-object or sub-element link. introduced in version 0.19
+    5. Std LinkReplace.svg Std LinkReplace: Replaces object(s) with new link(s). introduced in version 0.19
+    6. Std LinkUnlink.svg Std LinkUnlink: Replaces link(s) with their linked object(s). introduced in version 0.19
+    7. Std LinkImport.svg Std LinkImport: Imports selected external link(s). introduced in version 0.19
+    8. Std LinkImportAll.svg Std LinkImportAll: Imports all external link(s). introduced in version 0.19
+    9. Std LinkMakeGroup.svg Std LinkMakeGroup: Creates a group of links. introduced in version 0.19
+    10. Std LinkSelectLinked.svg Std LinkSelectLinked: Selects the linked object and switches to its document. introduced in version 0.19
+    11. Std LinkSelectLinkedFinal.svg Std LinkSelectLinkedFinal: Selects the deepest linked object and switches to its document. introduced in version 0.19
+    12. Std LinkSelectAllLinks.svg Std LinkSelectAllLinks: Selects all links to an object. introduced in version 0.19
+    13. Std TreeSelectAllInstances.svg Std TreeSelectAllInstances: Selects all instances of an object. introduced in version 0.19
+    14. Std SelBack.svg Std SelBack: Restores the previous saved selection. introduced in version 0.19
+    15. Std SelForward.svg Std SelForward: Restores the next saved selection. introduced in version 0.19
+
+
+Std Part（内部称为App Part）是一个通用容器，它将一组对象保持在一起，以便它们可以在3D 视图中作为一个单元一起移动。
+
+Properties
+
+Data
+Base
+
+    Data Type (String): 此对象的描述。默认情况下，它是一个空字符串"".
+    Data Id (String): 此对象的标识或部件号。默认情况下，它是一个空字符串"".
+    Data License (String): 用于指定此对象的许可证的字段。默认情况下，它是一个空字符串"".
+    Data LicenseURL (String): 用于指定此对象的许可证或合同的 Web 地址的字段。默认情况下，它是一个空字符串"".
+    Data Color (Color): 四个浮点RGBA值的元组，(r,g,b,a)用于定义对象的颜色；默认为(1.0, 1.0, 1.0, 1.0)，显示为[255,255,255]基数 255，白色.
+    Data Placement (Placement): the position of the object in the 3D view. The placement is defined by a Base point (vector), and a Rotation (axis and angle). See Placement.
+        Data Angle: the angle of rotation around the DataAxis. By default, it is 0° (zero degrees).
+        Data Axis: the unit vector that defines the axis of rotation for the placement. Each component is a floating point value between 0 and 1. If any value is above 1, the vector is normalized so that the magnitude of the vector is 1. By default, it is the positive Z axis, (0, 0, 1).
+        Data Position: 具有基点 3D 坐标的向量。默认情况下，它是 origin (0, 0, 0).
+    Data Label (String): 该对象的用户可编辑名称，它是一个任意的 UTF8 字符串.
+    Data Group (LinkList): a list of referenced objects. By default, it is empty [].
+Hidden properties Data
+    Data Material (Map): map with material properties. By default, it is empty {}.
+    Data Meta (Map): map with additional meta information. By default, it is empty {}.
+    Data Uid (UUID): the universally unique identifier (UUID) (128-bit number) of the object. This is assigned at creation time.
+    Data Label2 (String): a longer, user editable description of this object, it is an arbitrary UTF8 string that may include newlines. By default, it is an empty string "".
+    Data Expression Engine (ExpressionEngine): a list of expressions. By default, it is empty [].
+    Data Visibility (Bool): whether to display the object or not.
+    Data Origin (Link): the App Origin object that is the positional reference for all elements listed in DataGroup.
+    Data _Group Touched (Bool): whether the group is touched or not.
+
+View
+    The App Part only has the five properties of the basic App FeaturePython, and it does not have hidden properties.
+
+Base
+
+    View Display Mode (Enumeration): Group.
+    View On Top When Selected (Enumeration): Disabled (default), Enabled, Object, Element.
+    View Selection Style (Enumeration): Shape (default), BoundBox. If the option is Shape, the entire shape (vertices, edges, and faces) will be highlighted in the 3D view; if it is BoundBox only the bounding box will be highlighted.
+    View Show In Tree (Bool): if it is true, the object appears in the tree view. Otherwise, it is set as invisible.
+    View Visibility (Bool): if it is true, the object appears in the 3D view; otherwise it is invisible. By default this property can be toggled on and off by pressing the Space bar in the keyboard.
+
+
+
+example 创建一个part
+
+    import FreeCAD as App
+
+    doc = App.newDocument()
+    obj = App.ActiveDocument.addObject("App::Part", "Part")
+
+    bod1 = App.ActiveDocument.addObject("PartDesign::Body", "Body")
+    bod2 = App.ActiveDocument.addObject("Part::Box", "Box")
+
+    obj.addObjects([bod1, bod2])
+    App.ActiveDocument.recompute()
+
+
+
+    class MyGroup(object):
+        def __init__(self, obj=None):
+            self.Object = obj
+            if obj:
+                self.attach(obj)
+
+        def __getstate__(self):
+            return
+
+        def __setstate__(self, _state):
+            return
+
+        def attach(self, obj):
+            obj.addExtension('App::OriginGroupExtensionPython')
+            obj.Origin = FreeCAD.ActiveDocument.addObject('App::Origin', 'Origin')
+
+        def onDocumentRestored(self, obj):
+            self.Object = obj
+
+    class ViewProviderMyGroup(object):
+        def __init__(self, vobj=None):
+            if vobj:
+                vobj.Proxy = self
+                self.attach(vobj)
+            else:
+                self.ViewObject = None
+
+        def attach(self, vobj):
+            vobj.addExtension('Gui::ViewProviderOriginGroupExtensionPython')
+            self.ViewObject = vobj
+
+        def __getstate__(self):
+            return None
+
+        def __setstate__(self, _state):
+            return None
+
+    App.ActiveDocument.addObject('Part::FeaturePython', 'Group', group.MyGroup(), group.ViewProviderMyGroup(), True)
