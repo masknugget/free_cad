@@ -1,0 +1,259 @@
+class ScriptWorkbench (Workbench):
+    MenuText = "Scripts"
+    def Initialize(self):
+        import Scripts # assuming Scripts.py is your module
+        list = ["Script_Cmd"] # That list must contain command names, that can be defined in Scripts.py
+        self.appendToolbar("My Scripts",list)
+
+Gui.addWorkbench(ScriptWorkbench())
+
+
+
+
+import FreeCAD, FreeCADGui
+
+class ScriptCmd:
+   def Activated(self):
+       # Here your write what your ScriptCmd does...
+       FreeCAD.Console.PrintMessage('Hello, World!')
+   def GetResources(self):
+       return {'Pixmap' : 'path_to_an_icon/myicon.png', 'MenuText': 'Short text', 'ToolTip': 'More detailed text'}
+
+FreeCADGui.addCommand('Script_Cmd', ScriptCmd())
+
+
+
+
+# Assumes Import_Ext.py is the file that has the code for opening and reading .ext files
+FreeCAD.addImportType("Your new File Type (*.ext)","Import_Ext")
+
+
+
+# Add a line
+
+import Part,PartGui
+doc=App.activeDocument()
+# add a line element to the document and set its points
+l=Part.LineSegment()
+l.StartPoint=(0.0,0.0,0.0)
+l.EndPoint=(1.0,1.0,1.0)
+doc.addObject("Part::Feature","Line").Shape=l.toShape()
+doc.recompute()
+
+
+# Add a polygon
+
+import Part, PartGui
+doc = App.activeDocument()
+n = list()
+
+# create a 3D vector, set its coordinates and add it to the list
+v = App.Vector(0,0,0)
+n.append(v)
+v = App.Vector(10,0,0)
+n.append(v)
+#... repeat for all nodes
+
+# Create a polygon object and set its nodes
+p = doc.addObject("Part::Polygon","Polygon")
+p.Nodes = n
+doc.recompute()
+
+
+# Add and remove an object to/from a group
+
+doc=App.activeDocument()
+grp=doc.addObject("App::DocumentObjectGroup", "Group")
+lin=doc.addObject("Part::Feature", "Line")
+grp.addObject(lin) # adds the lin object to the group grp
+grp.removeObject(lin) # removes the lin object from the group grp
+
+
+# Add a Mesh
+
+import Mesh
+doc=App.activeDocument()
+# create a new empty mesh
+m = Mesh.Mesh()
+# build up box out of 12 facets
+m.addFacet(0.0,0.0,0.0, 0.0,0.0,1.0, 0.0,1.0,1.0)
+m.addFacet(0.0,0.0,0.0, 0.0,1.0,1.0, 0.0,1.0,0.0)
+m.addFacet(0.0,0.0,0.0, 1.0,0.0,0.0, 1.0,0.0,1.0)
+m.addFacet(0.0,0.0,0.0, 1.0,0.0,1.0, 0.0,0.0,1.0)
+m.addFacet(0.0,0.0,0.0, 0.0,1.0,0.0, 1.0,1.0,0.0)
+m.addFacet(0.0,0.0,0.0, 1.0,1.0,0.0, 1.0,0.0,0.0)
+m.addFacet(0.0,1.0,0.0, 0.0,1.0,1.0, 1.0,1.0,1.0)
+m.addFacet(0.0,1.0,0.0, 1.0,1.0,1.0, 1.0,1.0,0.0)
+m.addFacet(0.0,1.0,1.0, 0.0,0.0,1.0, 1.0,0.0,1.0)
+m.addFacet(0.0,1.0,1.0, 1.0,0.0,1.0, 1.0,1.0,1.0)
+m.addFacet(1.0,1.0,0.0, 1.0,1.0,1.0, 1.0,0.0,1.0)
+m.addFacet(1.0,1.0,0.0, 1.0,0.0,1.0, 1.0,0.0,0.0)
+# scale to a edge langth of 100
+m.scale(100.0)
+# add the mesh to the active document
+me=doc.addObject("Mesh::Feature","Cube")
+me.Mesh=m
+
+
+
+# Add an arc or a circle
+
+import Part
+doc = App.activeDocument()
+c = Part.Circle()
+c.Radius=10.0
+f = doc.addObject("Part::Feature", "Circle") # create a document with a circle feature
+f.Shape = c.toShape() # Assign the circle shape to the shape property
+doc.recompute()
+
+
+
+# Access and change the representation of an object
+gad = Gui.activeDocument() # access the active document containing all
+                           # view representations of the features in the
+                           # corresponding App document
+
+v = gad.getObject("Cube")  # access the view representation to the Mesh feature 'Cube'
+v.ShapeColor               # prints the color to the console
+v.ShapeColor=(1.0,1.0,1.0) # sets the shape color to white
+
+
+
+
+# Replace the form of mouse with one image
+import PySide2
+from PySide2 import QtCore, QtGui, QtWidgets
+from PySide2.QtWidgets import QApplication
+from PySide2.QtGui import QColor, QPixmap, QImage, QPainter, QCursor
+from PySide2.QtCore import Qt
+
+myImage = QtGui.QPixmap("Complete_Path_to_image.bmp")
+cursor = QtGui.QCursor(myImage)
+QtWidgets.QApplication.setOverrideCursor(QtGui.QCursor(cursor))
+
+
+
+
+# Observe camera change in the 3D viewer via Python
+
+
+def callback(*args):
+    cam, sensor = args
+    print()
+    print("Cam position : {}".format(cam.position.getValue().getValue()))
+    print("Cam rotation : {}".format(cam.orientation.getValue().getValue()))
+
+camera_node = Gui.ActiveDocument.ActiveView.getCameraNode()
+node_sensor = coin.SoNodeSensor(callback, camera_node)
+node_sensor.attach(camera_node)
+
+
+# Observe mouse events in the 3D viewer via Python
+App.newDocument()
+v=Gui.activeDocument().activeView()
+
+#This class logs any mouse button events. As the registered callback function fires twice for 'down' and
+#'up' events we need a boolean flag to handle this.
+class ViewObserver:
+   def logPosition(self, info):
+       down = (info["State"] == "DOWN")
+       pos = info["Position"]
+       if (down):
+           FreeCAD.Console.PrintMessage("Clicked on position: ("+str(pos[0])+", "+str(pos[1])+")\n")
+
+o = ViewObserver()
+c = v.addEventCallback("SoMouseButtonEvent",o.logPosition)
+
+v.removeEventCallback("SoMouseButtonEvent",c)
+
+
+
+
+# Display keys pressed and Events command
+
+App.newDocument()
+v=Gui.activeDocument().activeView()
+class ViewObserver:
+   def logPosition(self, info):
+       try:
+           down = (info["Key"])
+           FreeCAD.Console.PrintMessage(str(down)+"\n") # here the character pressed
+           FreeCAD.Console.PrintMessage(str(info)+"\n") # list all events command
+           FreeCAD.Console.PrintMessage("_______________________________________"+"\n")
+       except Exception:
+           None
+
+o = ViewObserver()
+c = v.addEventCallback("SoEvent",o.logPosition)
+
+#v.removeEventCallback("SoEvent",c) # remove ViewObserver
+
+
+
+# Manipulate the scenegraph in Python
+from pivy.coin import *                # load the pivy module
+view = Gui.ActiveDocument.ActiveView   # get the active viewer
+root = view.getSceneGraph()            # the root is an SoSeparator node
+root.addChild(SoCube())
+view.fitAll()
+
+# Enable or disable a window
+
+from PySide import QtGui
+mw = FreeCADGui.getMainWindow()
+dws = mw.findChildren(QtGui.QDockWidget)
+
+# objectName may be :
+# "Report view"
+# "Tree view"
+# "Property view"
+# "Selection view"
+# "Combo View"
+# "Python console"
+# "draftToolbar"
+
+for i in dws:
+  if i.objectName() == "Report view":
+    dw = i
+    break
+
+va = dw.toggleViewAction()
+va.setChecked(True)        # True or False
+dw.setVisible(True)        # True or False
+
+
+# How to create a face with holes using Python API
+
+import FreeCAD, Part
+
+# Create poles that will define the Face
+pts = [(-2, 2, 0),
+       (0, 2, 1),
+       (2, 2, 0),
+       (2, -2, 0),
+       (0, -2, 1),
+       (-2, -2, 0)]
+
+bs = Part.BSplineCurve()
+bs.buildFromPoles(pts, True)  # True makes this periodic/closed
+
+# Make the Face from the curve
+myFace = Part.makeFilledFace([bs.toShape()])
+
+# Create geometry for holes that will be cut in the surface
+hole0 = Part.Geom2d.Circle2d(FreeCAD.Base.Vector2d(0,0), 1.0)
+hole1 = Part.Geom2d.Circle2d(FreeCAD.Base.Vector2d(0,1.5), 0.1)
+
+edge0 = hole0.toShape(myFace)
+edge1 = hole1.toShape(myFace)
+wireb = Part.Wire(bs.toShape())
+wire0 = Part.Wire(edge0)
+wire1 = Part.Wire(edge1)
+
+# Cut holes in the face
+myFace.cutHoles([wire0])
+myFace.validate()  # This is required
+myFace.cutHoles([wire1])
+myFace.validate()
+
+Part.show(myFace)

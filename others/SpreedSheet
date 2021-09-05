@@ -1,0 +1,14 @@
+import Spreadsheet
+sheet = App.ActiveDocument.addObject("Spreadsheet::Sheet","MySpreadsheet")
+sheet.Label = "Dimensions"
+
+sheet.set('A1','10mm')
+sheet.recompute()
+sheet.get('A1')
+
+sheet.setAlias('B1','Diameter')
+sheet.set('Diameter','20mm')
+sheet.recompute()
+sheet.get('Diameter')
+
+

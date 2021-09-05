@@ -1,0 +1,126 @@
+## Std Part
+'''
+A Std Part (App Part) is created with the addObject() method of the document. Once a Part exists, other objects can be added to it with the addObject() or addObjects() methods of this Part.
+'''
+
+
+import FreeCAD as App
+
+doc = App.newDocument()
+obj = App.ActiveDocument.addObject("App::Part", "Part")
+
+bod1 = App.ActiveDocument.addObject("PartDesign::Body", "Body")
+bod2 = App.ActiveDocument.addObject("Part::Box", "Box")
+
+obj.addObjects([bod1, bod2])
+App.ActiveDocument.recompute()
+
+
+
+
+class MyGroup(object):
+    def __init__(self, obj=None):
+        self.Object = obj
+        if obj:
+            self.attach(obj)
+
+    def __getstate__(self):
+        return
+
+    def __setstate__(self, _state):
+        return
+
+    def attach(self, obj):
+        obj.addExtension('App::OriginGroupExtensionPython')
+        obj.Origin = FreeCAD.ActiveDocument.addObject('App::Origin', 'Origin')
+
+    def onDocumentRestored(self, obj):
+        self.Object = obj
+
+class ViewProviderMyGroup(object):
+    def __init__(self, vobj=None):
+        if vobj:
+            vobj.Proxy = self
+            self.attach(vobj)
+        else:
+            self.ViewObject = None
+
+    def attach(self, vobj):
+        vobj.addExtension('Gui::ViewProviderOriginGroupExtensionPython')
+        self.ViewObject = vobj
+
+    def __getstate__(self):
+        return None
+
+    def __setstate__(self, _state):
+        return None
+
+App.ActiveDocument.addObject('Part::FeaturePython', 'Group', group.MyGroup(), group.ViewProviderMyGroup(), True)
+
+
+
+# Std Group
+
+import FreeCAD as App
+
+doc = App.newDocument()
+obj = App.ActiveDocument.addObject("App::DocumentObjectGroup", "Group")
+
+bod1 = App.ActiveDocument.addObject("PartDesign::Body", "Body")
+bod2 = App.ActiveDocument.addObject("Part::Box", "Box")
+
+obj.addObjects([bod1, bod2])
+App.ActiveDocument.recompute()
+
+import FreeCAD as App
+
+doc = App.newDocument()
+obj = App.ActiveDocument.addObject("App::DocumentObjectGroupPython", "Name")
+obj.Label = "Custom label"
+
+
+# Std LinkMake
+
+import FreeCAD as App
+
+doc = App.newDocument()
+bod1 = App.ActiveDocument.addObject("Part::Box", "Box")
+bod2 = App.ActiveDocument.addObject("Part::Cylinder", "Cylinder")
+bod1.Placement.Base = App.Vector(10, 0, 0)
+bod2.Placement.Base = App.Vector(0, 10, 0)
+
+obj1 = App.ActiveDocument.addObject("App::Link", "Link")
+obj2 = App.ActiveDocument.addObject("App::Link", "Link")
+
+obj1.LinkedObject = bod1
+obj2.setLink(bod2)
+obj1.Placement.Base = App.Vector(-10, -10, 0)
+obj2.Placement.Base = App.Vector(10, -10, 0)
+obj1.ViewObject.OverrideMaterial = True
+App.ActiveDocument.recompute()
+
+
+
+import FreeCAD as App
+
+doc = App.newDocument()
+obj = App.ActiveDocument.addObject("App::LinkPython", "Link")
+obj.Label = "Custom label"
+
+
+
+# LinkMade
+import FreeCAD as App
+
+doc = App.newDocument()
+body = App.ActiveDocument.addObject("Part::Box", "Box")
+
+obj = App.ActiveDocument.addObject("App::Link", "Link")
+obj.setLink(body, '', ['Edge1', 'Edge6', 'Edge7', 'Edge10', 'Face2', 'Face3'])
+obj.LinkTransform = True
+obj.LinkPlacement.Base = App.Vector(20, 20, 0)
+App.ActiveDocument.recompute()
+
+
+
+# Std LinkReplace
