@@ -1,0 +1,37 @@
+import FreeCAD
+import Part
+
+class BoxDimension:
+  def __init__(self, obj):
+    obj.addProperty("App::PropertyLength", "Length").Length = 1
+    obj.addProperty("App::PropertyLength", "Width").Width = 1
+    obj.addProperty("App::PropertyLength", "Height").Height = 1
+    obj.Proxy = self
+
+class Box:
+  def __init__(self, obj):
+    obj.addProperty("App::PropertyLink", "Dimensions").Dimensions = None
+    obj.Proxy = self
+  def execute(self, obj):
+    if obj.Dimensions is None:
+      return
+    l = obj.Dimensions.Length
+    w = obj.Dimensions.Width
+    h = obj.Dimensions.Height
+    obj.Shape = Part.makeBox(l, w, h)
+
+
+
+
+doc = App.newDocument()
+dim = doc.addObject("App::FeaturePython", "BoxDimension")
+box = doc.addObject("Part::FeaturePython", "Box")
+dim_proxy = BoxDimension(dim)
+box_proxy = Box(box)
+box.ViewObject.Proxy = None
+box.Dimensions = dim
+
+dim.Length = 5
+dim.Width = 3
+dim.Height = 7
+doc.recompute()

@@ -1,0 +1,380 @@
+Macro/
+    |--> fpo/
+        |--> __init__.py
+        |--> box/
+            |--> __init__.py
+            |--> box.py
+
+
+# A FeaturePython object
+
+
+    class box():
+        def __init__(self, obj):
+            """
+            Default constructor
+            """
+            self.Type = 'box'       # String definition of the custom Python type.
+            obj.Proxy = self        # Stores a reference to the Python instance in the FeaturePython object.
+
+
+
+# 创建一个对象的模板
+
+import FreeCAD as App
+
+def create(obj_name):
+    """
+    Object creation method
+    """
+    obj = App.ActiveDocument.addObject('App::FeaturePython', obj_name)
+    box(obj)
+    return obj
+
+
+# 测试对象
+
+    from fpo.box import box
+    mybox = box.create('my_box')
+    dir(mybox)
+    dir(mybox.Proxy)
+    mybox.Proxy.Type
+
+
+# 添加属性
+
+    add_property(type, name, section, description)
+    mybox.supportedProperties()
+
+    obj.addProperty('App::PropertyString', 'Description', 'Base', 'Box description').Description = ""
+
+
+更加方便的重载
+
+    from importlib import reload
+    reload(box)
+
+    box.create('box_property_test')
+
+    obj.addProperty('App::PropertyLength', 'Length', 'Dimensions', 'Box length').Length = 10.0
+    obj.addProperty('App::PropertyLength', 'Width', 'Dimensions', 'Box width').Width = '10 mm'
+    obj.addProperty('App::PropertyLength', 'Height', 'Dimensions', 'Box height').Height = '1 cm'
+
+#在重新计算 FeaturePython 对象时要小心。重新计算应由其类外部的方法处理
+基本 FeaturePython 对象所需的最后一个元素是事件捕获。FeaturePython 对象可以通过回调函数对事件做出反应。在我们的例子中，我们希望对象在重新计算时做出反应。换句话说，我们想要捕获重新计算。为此，我们需要向execute()对象类添加一个具有特定名称 的函数
+
+    def execute(self, obj):
+        """
+        Called on document recompute
+        """
+
+        print('Recomputing {0:s} ({1:s})'.format(obj.Name, self.Type))
+
+
+
+import FreeCAD as App
+
+def create(obj_name):
+    """
+    Object creation method
+    """
+
+    obj = App.ActiveDocument.addObject('App::FeaturePython', obj_name)
+
+    box(obj)
+
+    App.ActiveDocument.recompute()
+
+    return obj
+
+class box():
+
+    def __init__(self, obj):
+        """
+        Default constructor
+        """
+
+        self.Type = 'box'
+
+        obj.Proxy = self
+
+        obj.addProperty('App::PropertyString', 'Description', 'Base', 'Box description').Description = ""
+        obj.addProperty('App::PropertyLength', 'Length', 'Dimensions', 'Box length').Length = 10.0
+        obj.addProperty('App::PropertyLength', 'Width', 'Dimensions', 'Box width').Width = '10 mm'
+        obj.addProperty('App::PropertyLength', 'Height', 'Dimensions', 'Box height').Height = '1 cm'
+
+    def execute(self, obj):
+        """
+        Called on document recompute
+        """
+
+        print('Recomputing {0:s} ({1:s})'.format(obj.Name, self.Type))
+
+
+
+
+添加视图属性
+
+import Part
+Part.show(Part.makeBox(obj.Length, obj.Width, obj.Height))
+
+
+
+一个原型
+
+class ViewProviderBox:
+
+    def __init__(self, obj):
+        """
+        Set this object to the proxy object of the actual view provider
+        """
+
+        obj.Proxy = self
+
+    def attach(self, obj):
+        """
+        Setup the scene sub-graph of the view provider, this method is mandatory
+        """
+        return
+
+    def updateData(self, fp, prop):
+        """
+        If a property of the handled feature has changed we have the chance to handle this here
+        """
+        return
+
+    def getDisplayModes(self,obj):
+        """
+        Return a list of display modes.
+        """
+        return []
+
+    def getDefaultDisplayMode(self):
+        """
+        Return the name of the default display mode. It must be defined in getDisplayModes.
+        """
+        return "Shaded"
+
+    def setDisplayMode(self,mode):
+        """
+        Map the display mode defined in attach with those defined in getDisplayModes.
+        Since they have the same names nothing needs to be done.
+        This method is optional.
+        """
+        return mode
+
+    def onChanged(self, vp, prop):
+        """
+        Print the name of the property that has changed
+        """
+
+        App.Console.PrintMessage("Change property: " + str(prop) + "\n")
+
+    def getIcon(self):
+        """
+        Return the icon in XMP format which will appear in the tree view. This method is optional and if not defined a default icon is shown.
+        """
+
+        return """
+            /* XPM */
+            static const char * ViewProviderBox_xpm[] = {
+            "16 16 6 1",
+            "    c None",
+            ".   c #141010",
+            "+   c #615BD2",
+            "@   c #C39D55",
+            "#   c #000000",
+            "$   c #57C355",
+            "        ........",
+            "   ......++..+..",
+            "   .@@@@.++..++.",
+            "   .@@@@.++..++.",
+            "   .@@  .++++++.",
+            "  ..@@  .++..++.",
+            "###@@@@ .++..++.",
+            "##$.@@$#.++++++.",
+            "#$#$.$$$........",
+            "#$$#######      ",
+            "#$$#$$$$$#      ",
+            "#$$#$$$$$#      ",
+            "#$$#$$$$$#      ",
+            " #$#$$$$$#      ",
+            "  ##$$$$$#      ",
+            "   #######      "};
+            """
+
+    def __getstate__(self):
+        """
+        Called during document saving.
+        """
+        return None
+
+    def __setstate__(self,state):
+        """
+        Called during document restore.
+        """
+        return None
+
+    def claimChildren(self):
+        """
+        Return a list of objects which will appear as children in the tree view.
+        """
+        return None
+
+
+
+ViewProviderBox(obj.ViewObject)
+
+
+
+FeaturePython 基本回调
+execute(self, obj)	在文档重新计算期间调用	请勿recompute()从此方法（或从调用的任何方法）调用，execute()因为这会导致嵌套重新计算。
+onBeforeChange(self, obj, prop)	在更改属性值之前调用	prop是要更改的属性的名称，而不是属性对象本身。无法取消属性更改。上一个/下一个属性值不能同时用于比较。
+onChanged(self, obj, prop)	在属性更改后调用	prop 是要更改的属性的名称，而不是属性对象本身。
+onDocumentRestored(self, obj)	在还原文档或复制 FeaturePython 对象后调用。	有时，类中对 FeaturePython 对象的引用或 FeaturePython 对象中的类可能会被破坏，因为在__init__()重构对象时未调用类方法。添加self.Object = obj或obj.Proxy = self经常解决这些问题。
+有关可用 FeaturePython 方法的完整参考，请参阅FeaturePython 方法。
+
+此外，在 ViewProvider 类中有两个回调可能偶尔有用：
+
+ViewProvider 基本回调
+updateData(self, obj, prop)	在数据（模型）属性更改后调用	obj是对 FeaturePython 类实例的引用，而不是 ViewProvider 实例。 prop是要更改的属性的名称，而不是属性对象本身。
+onChanged(self, vobj, prop)	在视图属性更改后调用	vobj是对 ViewProvider 实例的引用。 prop是已更改的视图属性的名称
+
+
+
+
+import FreeCAD as App
+import Part
+
+def create(obj_name):
+    """
+    Object creation method
+    """
+
+    obj = App.ActiveDocument.addObject('Part::FeaturePython', obj_name)
+
+    box(obj)
+
+    ViewProviderBox(obj.ViewObject)
+
+    App.ActiveDocument.recompute()
+
+    return obj
+
+class box():
+
+    def __init__(self, obj):
+        """
+        Default constructor
+        """
+
+        self.Type = 'box'
+
+        obj.Proxy = self
+
+        obj.addProperty('App::PropertyString', 'Description', 'Base', 'Box description').Description = ""
+        obj.addProperty('App::PropertyLength', 'Length', 'Dimensions', 'Box length').Length = 10.0
+        obj.addProperty('App::PropertyLength', 'Width', 'Dimensions', 'Box width').Width = '10 mm'
+        obj.addProperty('App::PropertyLength', 'Height', 'Dimensions', 'Box height').Height = '1 cm'
+
+    def execute(self, obj):
+        """
+        Called on document recompute
+        """
+
+        obj.Shape = Part.makeBox(obj.Length, obj.Width, obj.Height)
+
+class ViewProviderBox:
+
+    def __init__(self, obj):
+        """
+        Set this object to the proxy object of the actual view provider
+        """
+
+        obj.Proxy = self
+
+    def attach(self, obj):
+        """
+        Setup the scene sub-graph of the view provider, this method is mandatory
+        """
+        return
+
+    def updateData(self, fp, prop):
+        """
+        If a property of the handled feature has changed we have the chance to handle this here
+        """
+        return
+
+    def getDisplayModes(self,obj):
+        """
+        Return a list of display modes.
+        """
+        return []
+
+    def getDefaultDisplayMode(self):
+        """
+        Return the name of the default display mode. It must be defined in getDisplayModes.
+        """
+        return "Shaded"
+
+    def setDisplayMode(self,mode):
+        """
+        Map the display mode defined in attach with those defined in getDisplayModes.
+        Since they have the same names nothing needs to be done.
+        This method is optional.
+        """
+        return mode
+
+    def onChanged(self, vp, prop):
+        """
+        Print the name of the property that has changed
+        """
+
+        App.Console.PrintMessage("Change property: " + str(prop) + "\n")
+
+    def getIcon(self):
+        """
+        Return the icon in XMP format which will appear in the tree view. This method is optional and if not defined a default icon is shown.
+        """
+
+        return """
+            /* XPM */
+            static const char * ViewProviderBox_xpm[] = {
+            "16 16 6 1",
+            "    c None",
+            ".   c #141010",
+            "+   c #615BD2",
+            "@   c #C39D55",
+            "#   c #000000",
+            "$   c #57C355",
+            "        ........",
+            "   ......++..+..",
+            "   .@@@@.++..++.",
+            "   .@@@@.++..++.",
+            "   .@@  .++++++.",
+            "  ..@@  .++..++.",
+            "###@@@@ .++..++.",
+            "##$.@@$#.++++++.",
+            "#$#$.$$$........",
+            "#$$#######      ",
+            "#$$#$$$$$#      ",
+            "#$$#$$$$$#      ",
+            "#$$#$$$$$#      ",
+            " #$#$$$$$#      ",
+            "  ##$$$$$#      ",
+            "   #######      "};
+            """
+
+    def __getstate__(self):
+        """
+        Called during document saving.
+        """
+        return None
+
+    def __setstate__(self,state):
+        """
+        Called during document restore.
+        """
+        return None
+
+
