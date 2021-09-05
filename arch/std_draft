@@ -1,0 +1,61 @@
+该工作台草案可以绘制简单的2D对象，并提供了多种工具，以他们事后修改。它还提供用于定义工作平面、网格和捕捉系统的工具，以精确控制几何图形的位置。
+
+
+Drawing objects
+
+    1. Line: draws a line segment between two points.
+    2. Polyline: draws a line made of multiple line segments (polyline).
+    3. Fillet: draws a fillet (rounded corner) or a chamfer (straight line) between two simple Lines. introduced in version 0.19
+    4. Arc: draws an arc segment from center, radius, start angle and end angle.
+    5. Arc 3Points: draws a circular arc segment from three points that are located in the circumference. introduced in version 0.19
+    6. Circle: draws a circle from center and radius.
+    7. Ellipse: draws an ellipse from two corner points.
+    8. Rectangle: draws a rectangle from two corner points.
+    9. Polygon: draws a regular polygon from center, radius, and number of sides.
+    10. BSpline: draws a B-Spline from a series of points.
+    11. Cubic Bezier Curve: draws a Bezier curve of third degree by dragging two points. introduced in version 0.19
+    12. Bezier Curve: draws a Bezier curve from a series of points.
+    13. Point: inserts a point object.
+    14. Facebinder: creates a new object from selected faces on existing objects.
+    15. ShapeString: inserts a compound shape representing a text string at a given point.
+
+
+Annotation objects
+
+    1. Text: draws a multi-line text annotation.
+    2. Dimension: draws a dimension annotation.
+    3. Label: places a label with an arrow pointing to a selected element.
+    4. Annotation style editor: opens an editor to change the annotation style of these objects. introduced in version 0.19
+
+
+Modifying objects
+
+    Draft Move.svg Move: moves objects from one location to another.
+    Draft Rotate.svg Rotate: rotates objects from a start angle to an end angle.
+    Draft Scale.svg Scale: scales selected objects around a base point.
+    Draft Mirror.svg Mirror: mirrors the selected objects.
+    Draft Offset.svg Offset: offsets segments of an object a certain distance.
+    Draft Trimex.svg Trim/Extend (Trimex): trims or extends an object.
+    Draft Stretch.svg Stretch: stretches the selected objects.
+    Draft Clone.svg Clone: clones the selected objects.
+    Draft Array.svg Array tools.
+    Draft OrthoArray.svg Ortho Array: creates an orthogonal array from the selected object. It can also create App Link copies. introduced in version 0.19
+    Draft PolarArray.svg Polar Array: creates an array in a polar pattern, that is, sweeping an angle. It can also create App Link copies. introduced in version 0.19
+    Draft CircularArray.svg Circular Array: creates an array in a circular pattern, that is, starting from a center and moving outwards radially. It can also create App Link copies. introduced in version 0.19
+    Draft PathArray.svg Path Array: creates an array of objects by placing the copies along a path.
+    Draft PathLinkArray.svg Path LinkArray: like Draft PathArray.svg Path Array, but creates App Links instead of regular copies. introduced in version 0.19
+    Draft PointArray.svg Point Array: creates an array of objects by placing the copies at certain points.
+    Draft PointLinkArray.svg Point LinkArray: like Draft PointArray.svg Point Array, but creates App Links instead of regular copies. introduced in version 0.19
+    Draft Edit.svg Edit: edits a selected object.
+    Draft SubelementHighlight.svg Subelement highlight: enters an edit mode that allows editing different objects. introduced in version 0.19
+    Draft Join.svg Join: joins lines together into a single wire.
+    Draft Split.svg Split: splits a wire into two at a point.
+    Draft Upgrade.svg Upgrade: upgrades objects into a higher-level object.
+    Draft Downgrade.svg Downgrade: downgrades objects into lower-level objects.
+    Draft WireToBSpline.svg Wire to BSpline: converts a wire to a B-Spline and vice-versa.
+    Draft Draft2Sketch.svg Draft to Sketch: converts a Draft object to a Sketcher Workbench Sketch and vice-versa.
+    Draft Slope.svg Slope: changes the elevation slope of the currently selected Draft Line or Draft Wire.
+    Draft FlipDimension.svg Flip Dimension: flips the orientation of the text of a Draft Dimension.
+    Draft Shape2DView.svg Shape 2D View: creates a 2D object which is a flattened 2D view of a 3D object.
+
+

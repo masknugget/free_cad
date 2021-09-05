@@ -1,0 +1,79 @@
+该拱工作台提供了一个现代化的建筑信息模型（BIM）工作流程
+
+
+Tools
+These are tools for creating architectural objects.
+
+    Arch Wall.svg Wall: creates a wall from scratch or using a selected object as a base.
+    Arch CurtainWall.svg Curtain Wall: creates a curtain wall from scratch or using a selected object as a base. introduced in version 0.19
+    Arch Structure.svg Structural element: creates a structural element from scratch or using a selected object as a base.
+    Arch CompRebarStraight.png Rebar tools: the Reinforcement Addon augments the Arch Workbench Structures.
+    Arch Rebar Straight.png Straight Rebar: creates a Straight reinforcement bar in a selected structural element.
+    Arch Rebar UShape.png UShape Rebar: creates a UShape reinforcement bar in a selected structural element.
+    Arch Rebar LShape.png LShape Rebar: creates a LShape reinforcement bar in a selected structural element.
+    Arch Rebar BentShape.png Bent Shape Rebar: creates a Bent Shape reinforcement bar in a selected structural element.
+    Arch Rebar Stirrup.png Stirrup Rebar: creates a Stirrup reinforcement bar in a selected structural element.
+    Arch Rebar Helical.png Helical Rebar: creates a Helical reinforcement bar in a selected structural element.
+    Arch Rebar ColumnReinforcement.png ColumnReinforcement: creates a reinforcing bars inside a Column Arch Structure object.
+    Arch Rebar ColumnReinforcement.png ColumnReinforcement TwoTiesSixRebars: creates a reinforcing bars inside a Column Arch Structure object.
+    Arch Rebar BeamReinforcement.png BeamReinforcement: creates reinforcing bars inside a Beam Arch Structure object.
+    Arch Rebar.svg Rebar: creates a custom reinforcement bar in a selected structural element using a sketch.
+    Arch Floor.svg Floor: Creates a floor including selected objects
+    Arch BuildingPart.png Building Part: Creates a building part including selected objects
+    Arch Building.svg Building: Creates a building including selected objects
+    Arch Site.svg Site: Creates a site including selected objects
+    Arch Project.svg Project: Creates a project including selected objects
+    Arch Reference.svg Reference: Links objects from another FreeCAD file into this document
+    Arch Window.svg Window: Creates a window using a selected object as a base
+    Arch SectionPlane.svg Section Plane: Adds a section plane object to the document
+    Arch CompAxis.png Axis tools: The Axis tool allows you to places a series of axes in the current document.
+    Arch Axis.svg Axis: Adds a 1-direction array of axes to the document
+    Arch Axis System.svg Axes system: Adds an axes system composed of several axes to the document
+    Arch Grid.svg Grid: Adds a grid-like object to the document
+    Arch Roof.svg Roof: Creates a sloped roof from a selected face
+    Arch Space.svg Space: Creates a space object in the document
+    Arch Stairs.svg Stairs: Creates a stairs object in the document
+    Arch CompPanel.png Panel tools: Allows you to build all kinds of panel-like elements.
+    Arch Panel.svg Panel: Creates a panel object from a selected 2D object
+    Arch Panel Cut.svg Panel Cut: Creates a 2D cut view from a panel introduced in version 0.17
+    Arch Panel Sheet.svg Panel Sheet: Creates a 2D cut sheet including panel cuts or other 2D objects introduced in version 0.17
+    Arch Nest.svg Nest: Allow to nest several flat objects inside a container shape introduced in version 0.17
+    Arch Frame.svg Frame: Creates a frame object from a selected layout
+    Arch Fence.svg Fence: Creates a fence object from a selected post and path. introduced in version 0.19
+    Arch Truss.svg Truss: Creates a truss from a selected line of from scratch. introduced in version 0.19
+    Arch Equipment.svg Equipment: Creates an equipment or furniture object
+    Arch Profile.svg Profile: Creates a parametric 2D profile. introduced in version 0.19
+    Arch CompPipe.png Pipe tools introduced in version 0.17
+    Arch Pipe.svg Pipe: Creates a pipe introduced in version 0.17
+    Arch PipeConnector.svg Pipe Connector: Creates a corner or tee connection between 2 or 3 selected pipes introduced in version 0.17
+    Arch CompSetMaterial.png Material tools: The Material tools allows to add materials to the active document.
+    Arch SetMaterial.svg Material: Creates a material and attributes it to selected objects, if any
+    Arch MultiMaterial.svg Multi-Material: Creates a multi-material and attributes it to selected objects, if any introduced in version 0.17
+    Arch Schedule.svg Schedule: Creates different types of schedules
+
+Modification tools
+These are tools for modifying architectural objects.
+
+    Arch CutLine.svg Cut with a line: Cut an object according to a line. introduced in version 0.19
+    Arch CutPlane.svg Cut with plane: Cut an object according to a plane.
+    Arch Add.svg Add component: Adds objects to a component
+    Arch Remove.svg Remove component: Subtracts or removes objects from a component
+    Arch Survey.svg Survey: Enters or leaves surveying mode
+
+Utilities
+These are additional tools to help you in specific tasks.
+
+    Arch Component.svg Component: Creates a non-parametric Arch component
+    Arch CloneComponent.svg Clone component: Produces Arch Components that are clones of selected Arch objects (not to be confused with Draft Clone)
+    Arch SplitMesh.svg Split Mesh: Splits a selected mesh into separate components
+    Arch MeshToShape.svg Mesh To Shape: Converts a mesh into a shape, unifying coplanar faces
+    Arch SelectNonManifold.svg Select non-solid meshes: Selects all non-solid meshes from the current selection or from the document
+    Arch RemoveShape.svg Remove Shape: Turns cubic shape-based arch object fully parametric
+    Arch CloseHoles.svg Close Holes: Closes holes in a selected shape-based object
+    Arch MergeWalls.svg Merge Walls: Merge two or more walls
+    Arch Check.svg Check: Check if the selected objects are solids and don't contain defects
+    IFC.svg Ifc Explorer: Browse the contents of an IFC file
+    Arch ToggleIfcBrepFlag.svg Toggle IFC Brep flag: Forces a selected object to be exported as an IfcFacetedBrep.
+    Arch 3Views.svg 3 Views from mesh: Creates top, frontal and side views from a mesh.
+    Arch IfcSpreadsheet.svg Create IFC spreadsheet...: Creates a spreadsheet to store IFC properties of an object
+    Arch ToggleSubs.svg Toggle Subcomponents: Shows or hides the subcomponents of an Arch object.

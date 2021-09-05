@@ -8,9 +8,63 @@ Hidden properties Data
     Data    Proxy (PythonObject): a custom class associated with this object. This only exists for the Python version. See Scripting.
 
 View
-Base
+    Base
 
-See App FeaturePython for the basic view properties.
+    See App FeaturePython for the basic view properties.
 
 Hidden properties View
-ViewProxy (PythonObject): a custom view provider class associated with this object. This only exists for the Python version. See Scripting.
+    ViewProxy (PythonObject): a custom view provider class associated with this object. This only exists for the Python version. See Scripting.
+
+
+
+Data
+    Base
+
+    Data (hidden) Proxy (PythonObject): a custom class associated with this object.
+    Data Label (String): the user editable name of this object, it is an arbitrary UTF8 string.
+    Data (hidden) Label2 (String): a longer, user editable description of this object, it is an arbitrary UTF8 string that may include newlines. By default, it is an empty string "".
+    Data (hidden) Expression Engine (ExpressionEngine): a list of expressions. By default, it is empty [].
+    Data (hidden) Visibility (Bool): whether to display the object or not.
+
+
+
+View
+    Display Mode
+    Show In Tree (Bool)
+    Visibility (Bool): it defaults to true
+
+
+
+Example
+
+    import FreeCAD as App
+
+    doc = App.newDocument()
+    obj = App.ActiveDocument.addObject("App::FeaturePython", "Name")
+    obj.Label = "Custom label"
+
+    obj.ViewObject.ShowInTree
+
+
+
+Group 对象创建
+
+    import FreeCAD as App
+
+    doc = App.newDocument()
+    obj = App.ActiveDocument.addObject("App::DocumentObjectGroup", "Group")
+
+    bod1 = App.ActiveDocument.addObject("PartDesign::Body", "Body")
+    bod2 = App.ActiveDocument.addObject("Part::Box", "Box")
+
+    obj.addObjects([bod1, bod2])
+    App.ActiveDocument.recompute()
+
+
+创建一个document 然后创建一个组
+
+    import FreeCAD as App
+
+    doc = App.newDocument()
+    obj = App.ActiveDocument.addObject("App::DocumentObjectGroupPython", "Name")
+    obj.Label = "Custom label"

@@ -1,0 +1,72 @@
+App::Link类），一种引用或链接到同一文档或其他文档中的另一个对象的对象。它专门设计用于多次高效复制单个对象，
+这有助于从较小的子组件以及多个可重复使用的组件（如螺钉、螺母和类似紧固件）创建复杂的组件。
+
+使用Draft Clone可以实现简单的对象复制，但由于其实现本质上创建了源对象内部Shape的副本，因此这是一种效率较低的解决方案
+
+
+Data
+
+    Linked Object (XLink)
+    Link Transform (Bool)
+
+
+
+
+Example
+    用link进行对象的复制
+
+    import FreeCAD as App
+
+    doc = App.newDocument()
+    bod1 = App.ActiveDocument.addObject("Part::Box", "Box")
+    bod2 = App.ActiveDocument.addObject("Part::Cylinder", "Cylinder")
+    bod1.Placement.Base = App.Vector(10, 0, 0)
+    bod2.Placement.Base = App.Vector(0, 10, 0)
+
+    obj1 = App.ActiveDocument.addObject("App::Link", "Link")
+    obj2 = App.ActiveDocument.addObject("App::Link", "Link")
+
+    obj1.LinkedObject = bod1
+    obj2.setLink(bod2)
+    obj1.Placement.Base = App.Vector(-10, -10, 0)
+    obj2.Placement.Base = App.Vector(10, -10, 0)
+    obj1.ViewObject.OverrideMaterial = True
+    App.ActiveDocument.recompute()
+
+
+    // python的子类
+    import FreeCAD as App
+
+    doc = App.newDocument()
+    obj = App.ActiveDocument.addObject("App::LinkPython", "Link")
+    obj.Label = "Custom label"
+
+
+
+
+    import FreeCAD as App
+
+    doc = App.newDocument()
+    body = App.ActiveDocument.addObject("Part::Box", "Box")
+
+    obj = App.ActiveDocument.addObject("App::Link", "Link")
+    obj.setLink(body, '', ['Edge1', 'Edge6', 'Edge7', 'Edge10', 'Face2', 'Face3'])
+    obj.LinkTransform = True
+    obj.LinkPlacement.Base = App.Vector(20, 20, 0)
+    App.ActiveDocument.recompute()
+
+
+同样的link还有
+
+
+    Std LinkMake.svg Std LinkMake: Creates a link. introduced in version 0.19
+    Std LinkMakeRelative.svg Std LinkMakeRelative: Creates a sub-object or sub-element link. introduced in version 0.19
+    Std LinkReplace.svg Std LinkReplace: Replaces object(s) with new link(s). introduced in version 0.19
+    Std LinkUnlink.svg Std LinkUnlink: Replaces link(s) with their linked object(s). introduced in version 0.19
+    Std LinkImport.svg Std LinkImport: Imports selected external link(s). introduced in version 0.19
+    Std LinkImportAll.svg Std LinkImportAll: Imports all external link(s). introduced in version 0.19
+    Std LinkMakeGroup.svg Std LinkMakeGroup: Creates a group of links. introduced in version 0.19
+    Std LinkSelectLinked.svg Std LinkSelectLinked: Selects the linked object and switches to its document. introduced in version 0.19
+    Std LinkSelectLinkedFinal.svg Std LinkSelectLinkedFinal: Selects the deepest linked object and switches to its document. introduced in version 0.19
+    Std LinkSelectAllLinks.svg Std LinkSelectAllLinks: Selects all links to an object. introduced in version 0.19
+    Std TreeSelectAllInstances.svg Std TreeSelectAllInstances: Selects all instances of an object. introduced in version 0.19

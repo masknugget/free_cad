@@ -1,0 +1,109 @@
+Draft_Text
+
+    import FreeCAD as App
+    import Draft
+
+    doc = App.newDocument()
+
+    t1 = "This is a sample text"
+    p1 = App.Vector(0, 0, 0)
+
+    t2 = ["First line", "second line"]
+    p2 = App.Vector(1000, 1000, 0)
+
+    text1 = Draft.make_text(t1, p1)
+    text2 = Draft.make_text(t2, p2)
+    text1.ViewObject.FontSize = 200
+    text2.ViewObject.FontSize = 200
+
+    zaxis = App.Vector(0, 0, 1)
+
+    t3 = ["Upside", "down"]
+    p3 = App.Vector(-1000, -500, 0)
+    place3 = App.Placement(p3, App.Rotation(zaxis, 180))
+    text3 = Draft.make_text(t3, place3)
+    text3.ViewObject.FontSize = 200
+
+    doc.recompute()
+
+
+Draft_Dimension
+
+
+    import FreeCAD as App
+    import Draft
+
+    doc = App.newDocument()
+
+    p1 = App.Vector(0, 0, 0)
+    p2 = App.Vector(1000, 1000, 0)
+    p3 = App.Vector(-2500, 0, 0)
+    dimension1 = Draft.make_dimension(p1, p2, p3)
+    dimension1.ViewObject.FontSize = 200
+
+    polygon = Draft.make_polygon(3, radius=1000)
+    doc.recompute()
+
+    p4 = App.Vector(-2000, 1500, 0)
+    dimension2 = Draft.make_dimension(polygon, 1, 2, p4)
+    dimension2.ViewObject.FontSize = 200
+
+    center = App.Vector(2000, 0, 0)
+    p5 = App.Vector(3000, 1000, 0)
+    angle1 = 45
+    angle2 = 10
+    dimension3 = Draft.make_angular_dimension(center, [angle1, angle2], p5)
+    dimension3.ViewObject.FontSize = 200
+
+    dimension4 = Draft.make_angular_dimension(center, [angle2, angle1], p5*1.2)
+    dimension4.ViewObject.FontSize = 200
+
+    doc.recompute()
+
+
+Draft_Label
+
+
+    import FreeCAD as App
+    import Draft
+
+    doc = App.newDocument()
+
+    rectangle = Draft.make_rectangle(4000, 1000)
+    doc.recompute()
+
+    p1 = App.Vector(-200, 1000, 0)
+    place1 = App.Placement(App.Vector(-1000, 1300, 0), App.Rotation())
+
+    label1 = Draft.make_label(p1, place1, target_object=rectangle, distance=500, label_type="Label")
+    label1.ViewObject.TextSize = 200
+
+    p2 = App.Vector(-200, 0, 0)
+    place2 = App.Placement(App.Vector(-1000, -300, 0), App.Rotation())
+
+    label2 = Draft.make_label(p2, place2, target_object=rectangle, distance=500, label_type="Custom",
+                              custom_text="Beware of the sharp edges")
+    label2.ViewObject.TextSize = 200
+
+    p3 = App.Vector(1000, 1200, 0)
+    place3 = App.Placement(App.Vector(2000, 1800, 0), App.Rotation())
+
+    label3 = Draft.make_label(p3, place3, target_object=rectangle, distance=-500, label_type="Area")
+    label3.ViewObject.TextSize = 200
+
+    doc.recompute()
+
+
+
+Draft_AnnotationStyleEditor
+
+    >>> print(App.ActiveDocument.Meta["Draft_Style_Lane 1:100"])
+    {"FontName": "DejaVu Sans", "FontSize": "8.0000 ", "LineSpacing": "1 cm", "ScaleMultiplier": 1.0, "ShowUnit": false, "UnitOverride": "", "Decimals": 2, "ShowLines": true, "LineWidth": 2, "LineColor": 1095216660480, "ArrowType": 0, "ArrowSize": "5.0000 ", "DimensionOvershoot": "1.0000 ", "ExtensionLines": "5.0000 ", "ExtensionOvershoot": "1.0000 "}
+
+
+    import json
+
+    meta = App.ActiveDocument.Meta
+    props = {"LineWidth": 6, "ArrowSize": "7"}
+    meta["Draft_Style_Thick_lines"] = json.dumps(props)
+    App.ActiveDocument.Meta = meta
