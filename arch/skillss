@@ -1,0 +1,4 @@
+零件简单复制
+
+选择要复制的对象。
+FreeCADGui.runCommand('Part_SimpleCopy')
